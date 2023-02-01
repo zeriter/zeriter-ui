@@ -2,12 +2,14 @@ import request from '@/router/axios';
 import {baseUrl} from '@/config/env';
 import website from "@/config/website";
 
+// 登录方法
 export const loginByUsername = (tenantId, account, password, type, key, code) => request({
-  url: '/api/blade-auth/token',
+  url: '/api/auth/login',
   method: 'post',
   headers: {
     'Captcha-Key': key,
     'Captcha-Code': code,
+    isToken: false
   },
   params: {
     grantType: (website.captchaMode ? "captcha" : "password"),
@@ -67,7 +69,8 @@ export const getMenu = () => request({
 });
 
 export const getCaptcha = () => request({
-  url: '/api/blade-auth/captcha',
+  // url: '/api/blade-auth/captcha',
+  url: '/api/code',
   method: 'get'
 });
 
