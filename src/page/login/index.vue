@@ -1,33 +1,30 @@
 <template>
-  <div class="login-container"
-       @keyup.enter.native="handleLogin">
+  <div class="login-container" @keyup.enter.native="handleLogin">
     <top-color v-show="false"></top-color>
     <div class="login-weaper animated bounceInDown">
       <div class="login-left">
-        <div class="login-time">
-          {{time}}
-        </div>
-        <img class="img"
-             src="/img/logo.png"
-             alt="">
-        <p class="title">{{ $t('login.info') }}</p>
+        <p class="word">{{ $t("login.info") }}</p>
+        <p class="title">{{ time }}</p>
       </div>
       <div class="login-border">
         <div class="login-main">
           <h4 class="login-title">
-            {{ $t('login.title') }}{{website.title}}
+            {{ $t("login.title") }}{{ website.title }}
             <top-lang></top-lang>
           </h4>
-          <userLogin v-if="activeName==='user'"></userLogin>
-          <codeLogin v-else-if="activeName==='code'"></codeLogin>
-          <thirdLogin v-else-if="activeName==='third'"></thirdLogin>
+          <userLogin v-if="activeName === 'user'"></userLogin>
+          <codeLogin v-else-if="activeName === 'code'"></codeLogin>
+          <thirdLogin v-else-if="activeName === 'third'"></thirdLogin>
           <div class="login-menu">
-            <a href="#" @click.stop="activeName='user'">{{ $t('login.userLogin') }}</a>
+            <a href="#" @click.stop="activeName = 'user'">{{
+              $t("login.userLogin")
+            }}</a>
             <!--<a href="#" @click.stop="activeName='code'">{{ $t('login.phoneLogin') }}</a>-->
-            <a href="#" @click.stop="activeName='third'">{{ $t('login.thirdLogin') }}</a>
+            <a href="#" @click.stop="activeName = 'third'">{{
+              $t("login.thirdLogin")
+            }}</a>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -41,7 +38,7 @@ import { dateFormat } from "@/util/date";
 import { validatenull } from "@/util/validate";
 import topLang from "@/page/index/top/top-lang";
 import topColor from "@/page/index/top/top-color";
-import {getQueryString, getTopUrl} from "@/util/util";
+import { getQueryString, getTopUrl } from "@/util/util";
 export default {
   name: "login",
   components: {
@@ -49,7 +46,7 @@ export default {
     codeLogin,
     thirdLogin,
     topLang,
-    topColor
+    topColor,
   },
   data() {
     return {
@@ -60,22 +57,21 @@ export default {
         source: "",
         code: "",
         state: "",
-      }
+      },
     };
   },
   watch: {
     $route() {
       this.handleLogin();
-    }
+    },
   },
   created() {
     this.handleLogin();
     this.getTime();
   },
-  mounted() {
-  },
+  mounted() {},
   computed: {
-    ...mapGetters(["website", "tagWel"])
+    ...mapGetters(["website", "tagWel"]),
   },
   props: [],
   methods: {
@@ -90,27 +86,37 @@ export default {
       this.socialForm.source = getQueryString("source");
       this.socialForm.code = getQueryString("code");
       this.socialForm.state = getQueryString("state");
-      if (validatenull(this.socialForm.source) && topUrl.includes(redirectUrl)) {
+      if (
+        validatenull(this.socialForm.source) &&
+        topUrl.includes(redirectUrl)
+      ) {
         let source = topUrl.split("?")[0];
         source = source.split(redirectUrl)[1];
         this.socialForm.source = source;
       }
-      if (!validatenull(this.socialForm.source) && !validatenull(this.socialForm.code) && !validatenull(this.socialForm.state)) {
+      if (
+        !validatenull(this.socialForm.source) &&
+        !validatenull(this.socialForm.code) &&
+        !validatenull(this.socialForm.state)
+      ) {
         const loading = this.$loading({
           lock: true,
-          text: '第三方系统登录中,请稍后。。。',
-          spinner: "el-icon-loading"
+          text: "第三方系统登录中,请稍后。。。",
+          spinner: "el-icon-loading",
         });
-        this.$store.dispatch("LoginBySocial", this.socialForm).then(() => {
-          window.location.href = topUrl.split(redirectUrl)[0];
-          this.$router.push({path: this.tagWel.value});
-          loading.close();
-        }).catch(() => {
-          loading.close();
-        });
+        this.$store
+          .dispatch("LoginBySocial", this.socialForm)
+          .then(() => {
+            window.location.href = topUrl.split(redirectUrl)[0];
+            this.$router.push({ path: this.tagWel.value });
+            loading.close();
+          })
+          .catch(() => {
+            loading.close();
+          });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

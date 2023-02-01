@@ -16,6 +16,7 @@
   .el-input-group__append {
     border: none;
   }
+  width: 100%; height: 100%
 }
 
 .login-left,
@@ -30,34 +31,34 @@
   border-bottom-left-radius: 5px;
   justify-content: center;
   flex-direction: column;
-  background-color: #409EFF;
+  // background-color: #409EFF ;
+  background-image: -webkit-linear-gradient(0deg,#376be6 0%,#6470ef 100%);
   color: #fff;
   float: left;
   width: 50%;
   position: relative;
+  height: 100%; 
+  width: 60%
 }
 .login-left .img {
   width: 140px;
 }
-.login-time {
-  position: absolute;
-  left: 25px;
-  top: 25px;
-  width: 100%;
-  color: #fff;
-  font-weight: 200;
-  opacity: 0.9;
-  font-size: 18px;
-  overflow: hidden;
-}
+
 .login-left .title {
-  margin-top: 60px;
   text-align: center;
   color: #fff;
   font-weight: 300;
   letter-spacing: 2px;
   font-size: 25px;
 }
+.login-left .word {
+  text-align: center;
+  color: #fff;
+  font-weight: 300;
+  letter-spacing: 2px;
+  font-size: 2.5rem;
+}
+
 
 .login-border {
   border-left: none;
@@ -68,6 +69,8 @@
   width: 50%;
   float: left;
   box-sizing: border-box;
+  height: 100%; 
+  width: 40%
 }
 .login-main {
   margin: 0 auto;

@@ -67,7 +67,7 @@ export const getMenu = () => request({
 });
 
 export const getCaptcha = () => request({
-  url: '/api/workstation-auth/code',
+  url: '/api/blade-auth/captcha',
   method: 'get'
 });
 

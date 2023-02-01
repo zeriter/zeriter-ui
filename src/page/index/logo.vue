@@ -1,21 +1,18 @@
 <template>
   <div class="avue-logo">
     <transition name="fade">
-      <span v-if="keyCollapse"
-            class="avue-logo_subtitle"
-            key="0">
-        <img src="img/bg/img-logo.png"
-             width="30" />
+      <span v-if="keyCollapse" class="avue-logo_subtitle" key="0">
+        <img src="img/bg/img-logo.png" width="30" />
       </span>
     </transition>
     <transition-group name="fade">
       <template v-if="!keyCollapse">
-        <span class="avue-logo_title"
-              key="1">
+        <span class="avue-logo_title" key="1">
           <div>
-            <img src="img/bg/img-logo.png"
-                 width="30"
-                 alt="">{{website.indexTitle}}</div>
+            <img src="img/bg/img-logo.png" width="30" alt="" />{{
+              website.indexTitle
+            }}
+          </div>
         </span>
       </template>
     </transition-group>
@@ -31,9 +28,9 @@ export default {
   },
   created() {},
   computed: {
-    ...mapGetters(["website", "keyCollapse"])
+    ...mapGetters(["website", "keyCollapse"]),
   },
-  methods: {}
+  methods: {},
 };
 </script>
 
