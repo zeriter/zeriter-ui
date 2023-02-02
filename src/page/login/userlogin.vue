@@ -89,7 +89,7 @@ import { getCaptcha } from "@/api/user";
 // import { getTopUrl } from "@/util/util";
 // import { info } from "@/api/system/tenant";
 import Cookies from "js-cookie";
-// import { encrypt, decrypt } from "@/utils/jsencrypt";
+import { encrypt, decrypt } from "@/util/jsencrypt";
 
 export default {
   name: "userlogin",
@@ -193,7 +193,7 @@ export default {
       const rememberMe = Cookies.get("rememberMe");
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
-        password: password === undefined ? this.loginForm.password : password,
+        password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
       };
     },

@@ -4,7 +4,7 @@ import website from "@/config/website";
 
 // 登录方法
 export const loginByUsername = (tenantId, account, password, type, key, code) => request({
-  url: '/api/auth/login',
+  url: '/api/workstation-auth/login',
   method: 'post',
   headers: {
     'Captcha-Key': key,
