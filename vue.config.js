@@ -23,7 +23,7 @@ module.exports = {
   },
   devServer: {
     // 端口配置
-    port: 1888,
+    port: 80,
     // 反向代理配置
     proxy: {
       '/api': {

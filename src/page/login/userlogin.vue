@@ -7,17 +7,6 @@
     :model="loginForm"
     label-width="0"
   >
-    <el-form-item v-if="tenantMode" prop="tenantId">
-      <el-input
-        size="small"
-        @keyup.enter.native="handleLogin"
-        v-model="loginForm.tenantId"
-        auto-complete="off"
-        :placeholder="$t('login.tenantId')"
-      >
-        <i slot="prefix" class="icon-quanxian"></i>
-      </el-input>
-    </el-form-item>
     <el-form-item prop="username">
       <el-input
         size="small"
@@ -46,7 +35,7 @@
         <i slot="prefix" class="icon-mima"></i>
       </el-input>
     </el-form-item>
-    <el-form-item v-if="captchaMode" prop="code">
+    <el-form-item v-if="loginForm.showCode" prop="code">
       <el-row :span="24">
         <el-col :span="16">
           <el-input
@@ -62,8 +51,8 @@
         <el-col :span="8">
           <div class="login-code">
             <img
-              :src="loginForm.image"
               class="login-code-img"
+              :src="loginForm.image"
               @click="refreshCode"
             />
           </div>
@@ -85,11 +74,11 @@
 <script>
 import { mapGetters } from "vuex";
 import website from "@/config/website";
-import { getCaptcha } from "@/api/user";
+import { loginByUsername, getCaptcha } from "@/api/user";
 // import { getTopUrl } from "@/util/util";
 // import { info } from "@/api/system/tenant";
 import Cookies from "js-cookie";
-import { encrypt, decrypt } from "@/util/jsencrypt";
+import { decrypt } from "@/util/jsencrypt";
 
 export default {
   name: "userlogin",
@@ -98,12 +87,14 @@ export default {
       tenantMode: website.tenantMode,
       captchaMode: website.captchaMode,
       loginForm: {
-        //租户ID
-        tenantId: "000000",
+        //是否显示验证码
+        showCode: false,
+        //流水ID
+        uuid: "000000",
         //用户名
         username: "admin",
         //密码
-        password: "admin",
+        password: "admin123",
         //账户类型
         type: "account",
         //验证码的值
@@ -112,12 +103,9 @@ export default {
         key: "",
         //预加载白色背景
         image:
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+          "data:image/jpg;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
       },
       loginRules: {
-        tenantId: [
-          { required: false, message: "请输入租户ID", trigger: "blur" },
-        ],
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
         ],
@@ -130,9 +118,8 @@ export default {
     };
   },
   created() {
-    // this.getTenant();
     this.refreshCode();
-    // this.getCookie();
+    this.getCookie();
   },
   mounted() {},
   computed: {
@@ -143,10 +130,10 @@ export default {
     refreshCode() {
       getCaptcha().then((res) => {
         const data = res.data;
-        if (data.captchaEnabled === undefined ? true : data.captchaEnabled) {
-          this.loginForm.key = data.key;
-          this.loginForm.image = "data:image/gif;base64," + data.img;
-        }
+        this.loginForm.showCode = data.captchaEnabled;
+        this.loginForm.key = data.key;
+        this.loginForm.image = data.img;
+        this.loginForm.uuid = data.uuid;
       });
     },
     showPassword() {
@@ -162,40 +149,36 @@ export default {
             text: "登录中,请稍后。。。",
             spinner: "el-icon-loading",
           });
-          this.$store
-            .dispatch("loginByUsername", this.loginForm)
+          //this.loginForm
+          var datas = {
+            uuid: this.loginForm.uuid,
+            username: this.loginForm.username,
+            password: this.loginForm.password,
+            type: this.loginForm.type,
+            key: this.loginForm.key,
+            code: this.loginForm.code,
+          };
+          loginByUsername(datas)
             .then(() => {
               this.$router.push({ path: this.tagWel.value });
               loading.close();
             })
             .catch(() => {
               loading.close();
+              if (this.loginForm.showCode) {
+                this.refreshCode();
+              }
             });
         }
       });
     },
-    // getTenant() {
-    //   let domain = getTopUrl();
-    //   console.log(domain);
-    //   // 临时指定域名，方便测试
-    //   //domain = "https://bladex.vip";
-    //   info(domain).then((res) => {
-    //     const data = res.data;
-    //     if (data.success && data.data.tenantId) {
-    //       this.tenantMode = false;
-    //       this.loginForm.tenantId = data.data.tenantId;
-    //     }
-    //   });
-    // },
     getCookie() {
       const username = Cookies.get("username");
       const password = Cookies.get("password");
-      const rememberMe = Cookies.get("rememberMe");
-      this.loginForm = {
-        username: username === undefined ? this.loginForm.username : username,
-        password: password === undefined ? this.loginForm.password : decrypt(password),
-        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
-      };
+      this.loginForm.username =
+        username === undefined ? this.loginForm.username : username;
+      this.loginForm.password =
+        password === undefined ? this.loginForm.password : decrypt(password);
     },
   },
 };
