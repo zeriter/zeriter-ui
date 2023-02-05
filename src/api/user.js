@@ -2,23 +2,21 @@ import request from '@/router/axios';
 import {baseUrl} from '@/config/env';
 import website from "@/config/website";
 
-// 登录方法
-export const loginByUsername = (params) => {
-  return request({
-    url: '/api/auth/login',
-    method: 'post',
-    headers: {
-      "Content-Type":"application/json;charset=UTF-8",
-      'Captcha-Key': params.key,
-      'Captcha-Code': params.code,
-      isToken: false
-    },
-    data: {
-      ...params,
-      grantType: (website.captchaMode ? "captcha" : "password"),
-    }
-  })
-};
+export const loginByUsername = (tenantId, account, password, type, key, code) => request({
+  url: '/api/blade-auth/token',
+  method: 'post',
+  headers: {
+    'Captcha-Key': key,
+    'Captcha-Code': code,
+  },
+  params: {
+    grantType: (website.captchaMode ? "captcha" : "password"),
+    tenantId,
+    account,
+    password,
+    type
+  }
+});
 
 export const loginBySocial = (tenantId, source, code, state) => request({
   url: '/api/blade-auth/token',
@@ -42,12 +40,12 @@ export const getButtons = () => request({
 });
 
 export const getUserInfo = () => request({
-  url: baseUrl + '/system/user/getInfo',
+  url: baseUrl + '/user/getUserInfo',
   method: 'get'
 });
 
 export const refreshToken = () => request({
-  url: baseUrl + '/auth/refresh',
+  url: baseUrl + '/user/refesh',
   method: 'post'
 })
 
@@ -67,9 +65,9 @@ export const getMenu = () => request({
   url: '/api/blade-system/menu/routes',
   method: 'get'
 });
-// 获取验证码
+
 export const getCaptcha = () => request({
-  url: '/api/code',
+  url: '/api/blade-auth/captcha',
   method: 'get'
 });
 
@@ -79,12 +77,12 @@ export const getTopMenu = () => request({
 });
 
 export const sendLogs = (list) => request({
-  url: baseUrl + '/auth/logout',
+  url: baseUrl + '/user/logout',
   method: 'post',
   data: list
 })
 
 export const logout = () => request({
-  url: baseUrl + '/auth/logout',
+  url: baseUrl + '/user/logout',
   method: 'get'
 })
