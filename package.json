@@ -1,6 +1,6 @@
 {
-  "name": "saber-admin",
-  "version": "3.5.0",
+  "name": "zeriter-ui",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
